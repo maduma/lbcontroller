@@ -22,9 +22,9 @@ def parse_html(html):
     soup = BeautifulSoup(html, 'html.parser')
     for group_h3 in soup.find_all('h3'):
         _, group_name = group_h3.find('a').string.split('://')
-        status[group_name] = []
         _, members_table = group_h3.find_next_siblings('table', limit=2)
         _, *members_raws = members_table.find_all('tr')
+        status[group_name] = []
         for raw in members_raws:
             *_, status_td = raw.find_all('td', limit=6)
             member_status = status_td.string.strip()
