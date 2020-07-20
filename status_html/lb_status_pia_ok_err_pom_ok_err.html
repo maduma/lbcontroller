@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head><title>Balancer Manager</title>
+<style type='text/css'>
+table {
+ border-width: 1px;
+ border-spacing: 3px;
+ border-style: solid;
+ border-color: gray;
+ border-collapse: collapse;
+ background-color: white;
+ text-align: center;
+}
+th {
+ border-width: 1px;
+ padding: 2px;
+ border-style: dotted;
+ border-color: gray;
+ background-color: lightgray;
+ text-align: center;
+}
+td {
+ border-width: 1px;
+ padding: 2px;
+ border-style: dotted;
+ border-color: gray;
+ background-color: white;
+ text-align: center;
+}
+</style>
+</head>
+<body><h1>Load Balancer Manager for doc.maduma.org</h1>
+
+<dl><dt>Server Version: Apache/2.4.29 (Ubuntu)</dt>
+<dt>Server Built: 2020-03-13T12:26:16</dt>
+<dt>Balancer changes will NOT be persisted on restart.</dt><dt>Balancers are inherited from main server.</dt><dt>ProxyPass settings are inherited from main server.</dt></dl>
+<hr />
+<h3>LoadBalancer Status for <a href='/balancer-manager?b=pianiste&amp;nonce=c4718cc9-b73a-4659-86a5-ceeb758f0160'>balancer://pianiste</a> [p6eb06bff_pianiste]</h3>
+
+
+<table><tr><th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th><th>Path</th><th>Active</th></tr>
+<tr><td>2 [2 Used]</td>
+<td> (None) </td><td>Off</td>
+<td>0</td><td>1</td>
+<td>byrequests</td>
+<td>/pianiste</td>
+<td>Yes</td>
+</table>
+<br />
+
+<table><tr><th>Worker URL</th><th>Route</th><th>RouteRedir</th><th>Factor</th><th>Set</th><th>Status</th><th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th></tr>
+<tr>
+<td><a href='/balancer-manager?b=pianiste&amp;w=http://acc1.maduma.org/pianiste-metrics:80&amp;nonce=c4718cc9-b73a-4659-86a5-ceeb758f0160'>http://acc1.maduma.org/pianiste-metrics:80</a></td><td></td><td></td><td>1.00</td><td>0</td><td>Init Ok </td><td>4</td><td>0</td><td>0</td><td>2.8K</td><td> 40K</td></tr>
+<tr>
+<td><a href='/balancer-manager?b=pianiste&amp;w=http://acc2.maduma.org/pianiste-metrics:80&amp;nonce=c4718cc9-b73a-4659-86a5-ceeb758f0160'>http://acc2.maduma.org/pianiste-metrics:80</a></td><td></td><td></td><td>1.00</td><td>0</td><td>Init Err </td><td>3</td><td>0</td><td>0</td><td>1.4K</td><td> 20K</td></tr>
+</table>
+<hr />
+<h3>LoadBalancer Status for <a href='/balancer-manager?b=pompiste&amp;nonce=bc9300f7-7902-467f-953c-6e6c57f8303f'>balancer://pompiste</a> [p6eb06bff_pompiste]</h3>
+
+
+<table><tr><th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th><th>Path</th><th>Active</th></tr>
+<tr><td>2 [2 Used]</td>
+<td> (None) </td><td>Off</td>
+<td>0</td><td>1</td>
+<td>byrequests</td>
+<td>/pompiste</td>
+<td>Yes</td>
+</table>
+<br />
+
+<table><tr><th>Worker URL</th><th>Route</th><th>RouteRedir</th><th>Factor</th><th>Set</th><th>Status</th><th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th></tr>
+<tr>
+<td><a href='/balancer-manager?b=pompiste&amp;w=http://acc1.maduma.org/pompiste-metrics:80&amp;nonce=bc9300f7-7902-467f-953c-6e6c57f8303f'>http://acc1.maduma.org/pompiste-metrics:80</a></td><td></td><td></td><td>1.00</td><td>0</td><td>Init Ok </td><td>5</td><td>0</td><td>0</td><td>2.8K</td><td>164 </td></tr>
+<tr>
+<td><a href='/balancer-manager?b=pompiste&amp;w=http://acc2.maduma.org/pompiste-metrics:80&amp;nonce=bc9300f7-7902-467f-953c-6e6c57f8303f'>http://acc2.maduma.org/pompiste-metrics:80</a></td><td></td><td></td><td>1.00</td><td>0</td><td>Init Err </td><td>4</td><td>0</td><td>0</td><td>2.1K</td><td> 15K</td></tr>
+</table>
+<hr />
+<address>Apache/2.4.29 (Ubuntu) Server at doc.maduma.org Port 80</address>
+</body></html>
