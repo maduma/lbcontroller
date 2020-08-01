@@ -37,6 +37,14 @@ def parse_html(html):
                 })
     return status
 
-def set_worker(addr, group, worker, disable, proto='https'):
-    pass
+def set_worker(addr, group, workerid, disable, proto='https'):
+    lb_manager_url = f'{proto}://{addr}/balancer-manager'
+    html = get_html(addr, proto)
+    status = parse_html(html)
+    requests.post(lb_manager_url, data={
+        'w': status[group]['workers'][workerid]['url'],
+        'b': group,
+        'nonce': status[group]['nonce'],
+        'w_status_D': 1,
+    })
 
