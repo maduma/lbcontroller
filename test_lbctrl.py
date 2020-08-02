@@ -4,7 +4,7 @@ import httpretty
 def test_get_group_status():
     addr = 'doc.maduma.org'
 
-    filename = 'status_html/lb_status_ok.html'
+    filename = 'status_html/lb_status_pia_ok_ok_pom_err_ok.html'
     with open(filename, 'r') as f: html = f.read()
     lb_manager_url = f'http://{addr}/balancer-manager'
 
@@ -12,9 +12,9 @@ def test_get_group_status():
     httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
 
     status = lbctrl.get_group_status(addr, 'pianiste', proto='http')
-    assert status == ['Init Ok', 'Init Ok']
+    assert status == 'ok'
     status = lbctrl.get_group_status(addr, 'pompiste', proto='http')
-    assert status == ['Init Ok', 'Init Ok']
+    assert status == 'degraded'
 
     httpretty.disable()
     httpretty.reset()
