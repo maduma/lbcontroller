@@ -2,7 +2,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 
-def get_status(addr, group, proto='https'):
+def get_group_status(addr, group, proto='https'):
     html = get_html(addr, proto)
     status = parse_html(html)
     return [x['status'] for x in status[group]['workers']]
@@ -41,10 +41,16 @@ def set_worker(addr, group, workerid, disable, proto='https'):
     lb_manager_url = f'{proto}://{addr}/balancer-manager'
     html = get_html(addr, proto)
     status = parse_html(html)
-    requests.post(lb_manager_url, data={
-        'w': status[group]['workers'][workerid]['url'],
-        'b': group,
-        'nonce': status[group]['nonce'],
-        'w_status_D': 1,
-    })
+    if group in status and  workerid in status[group]['workers']:
+        response = requests.post(lb_manager_url, data={
+            'w': status[group]['workers'][workerid]['url'],
+            'b': group,
+            'nonce': status[group]['nonce'],
+            'w_status_D': 1 if disable else 0,
+        })
+        if response.status_code != 200:
+            logging.error(response.reason)
+    else:
+        logging.error(group)
+
 

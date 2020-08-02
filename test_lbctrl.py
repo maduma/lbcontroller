@@ -1,7 +1,7 @@
 import lbctrl
 import httpretty
 
-def test_get_status():
+def test_get_group_status():
     addr = 'doc.maduma.org'
 
     filename = 'status_html/lb_status_ok.html'
@@ -11,9 +11,9 @@ def test_get_status():
     httpretty.enable()
     httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
 
-    status = lbctrl.get_status(addr, 'pianiste', proto='http')
+    status = lbctrl.get_group_status(addr, 'pianiste', proto='http')
     assert status == ['Init Ok', 'Init Ok']
-    status = lbctrl.get_status(addr, 'pompiste', proto='http')
+    status = lbctrl.get_group_status(addr, 'pompiste', proto='http')
     assert status == ['Init Ok', 'Init Ok']
 
     httpretty.disable()
@@ -81,6 +81,33 @@ def test_disable_worker():
     httpretty.register_uri(httpretty.POST, lb_manager_url, body=request_callback)
 
     lbctrl.set_worker(addr, group, workerid, disable=True, proto='http')
+
+    httpretty.disable()
+    httpretty.reset()
+
+def test_enable_worker():
+    addr = 'doc.maduma.org'
+    group = 'pianiste'
+    workerid = 0
+
+    filename = 'status_html/lb_status_ok.html'
+    with open(filename, 'r') as f: html = f.read()
+    lb_manager_url = f'http://{addr}/balancer-manager'
+
+    def request_callback(request, uri, response_headers):
+        assert request.parsed_body == {
+            'w': ['http://acc1.maduma.org/pianiste-metrics:80'],
+            'b': ['pianiste'],
+            'nonce': ['c4718cc9-b73a-4659-86a5-ceeb758f0160'],
+            'w_status_D': ['0'],
+            }
+        return [200, response_headers, '']
+
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
+    httpretty.register_uri(httpretty.POST, lb_manager_url, body=request_callback)
+
+    lbctrl.set_worker(addr, group, workerid, disable=False, proto='http')
 
     httpretty.disable()
     httpretty.reset()
