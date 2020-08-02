@@ -14,7 +14,7 @@ def test_get_group_status():
     status = lbctrl.get_group_status(addr, 'pianiste', proto='http')
     assert status == 'ok'
     status = lbctrl.get_group_status(addr, 'pompiste', proto='http')
-    assert status == 'degraded'
+    assert status == ('degraded', ['Init Err', 'Init Ok'])
 
     httpretty.disable()
     httpretty.reset()

@@ -5,13 +5,14 @@ from bs4 import BeautifulSoup
 def get_group_status(addr, group, proto='https'):
     html = get_html(addr, proto)
     status = parse_html(html)
-    workers_ok = set([ x['status'] == 'Init Ok' for x in status[group]['workers'] ])
+    workers_status = [ x['status'] for x in status[group]['workers'] ]
+    workers_ok = set([ x == 'Init Ok' for x in workers_status ])
     if len(workers_ok) == 1:
         if workers_ok.pop():
             return 'ok' 
         else:
-            return 'nok'
-    return 'degraded'
+            return 'nok', workers_status
+    return 'degraded', workers_status
 
 def get_html(addr, proto):
     lb_manager_url = f'{proto}://{addr}/balancer-manager'
