@@ -16,5 +16,5 @@ def disable():
 def enable():
     click.echo('Dropped the database')
 
-if __name__ == '__main__':
+def main():
     cli()
