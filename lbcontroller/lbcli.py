@@ -1,8 +1,8 @@
 import click
 
 @click.group()
-@click.option('--addr', required=True)
-@click.option('--proto', default='https')
+@click.option('--addr', help='loadbalancer address', required=True)
+@click.option('--proto', help='http|https, default to https', default='https')
 @click.pass_context
 def cli(ctx, addr, proto):
     ctx.obj['ADDR'] = addr
