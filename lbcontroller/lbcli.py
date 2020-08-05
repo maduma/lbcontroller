@@ -1,20 +1,39 @@
 import click
 
 @click.group()
-def cli():
+@click.option('--addr', required=True)
+@click.option('--proto', default='https')
+@click.pass_context
+def cli(ctx, addr, proto):
+    ctx.obj['ADDR'] = addr
+    ctx.obj['PROTO'] = proto
     pass
 
 @cli.command()
-def status():
-    click.echo('Initialized the database')
+@click.argument('group')
+@click.pass_context
+def status(ctx, group):
+    addr = ctx.obj['ADDR']
+    proto = ctx.obj['PROTO']
+    click.echo(f'Status for {group} on {addr} {proto} loadbalancer')
 
 @cli.command()
-def disable():
-    click.echo('Dropped the database')
+@click.argument('group')
+@click.argument('instance')
+@click.pass_context
+def disable(ctx, group, instance):
+    addr = ctx.obj['ADDR']
+    proto = ctx.obj['PROTO']
+    click.echo(f'Disable instance {instance} of {group} on {addr} {proto} loadbalancer')
 
 @cli.command()
-def enable():
-    click.echo('Dropped the database')
+@click.argument('group')
+@click.argument('instance')
+@click.pass_context
+def enable(ctx, group, instance):
+    addr = ctx.obj['ADDR']
+    proto = ctx.obj['PROTO']
+    click.echo(f'enable instance {instance} of {group} on {addr} {proto} loadbalancer')
 
 def main():
-    cli()
+    cli(obj={})
