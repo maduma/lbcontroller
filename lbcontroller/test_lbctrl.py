@@ -1,4 +1,4 @@
-import lbctrl
+from lbcontroller import lbctrl
 import httpretty
 
 def test_get_group_status():
@@ -60,27 +60,26 @@ def test_parse_html():
 
 def test_disable_worker():
     addr = 'doc.maduma.org'
-    group = 'pianiste'
-    workerid = 0
+    group = 'pompiste'
+    workerid = 1
 
     filename = 'status_html/lb_status_ok.html'
     with open(filename, 'r') as f: html = f.read()
     lb_manager_url = f'http://{addr}/balancer-manager'
 
-    def request_callback(request, uri, response_headers):
-        assert request.parsed_body == {
-            'w': ['http://acc1.maduma.org/pianiste-metrics:80'],
-            'b': ['pianiste'],
-            'nonce': ['c4718cc9-b73a-4659-86a5-ceeb758f0160'],
-            'w_status_D': ['1'],
-            }
-        return [200, response_headers, '']
-
     httpretty.enable()
     httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
-    httpretty.register_uri(httpretty.POST, lb_manager_url, body=request_callback)
+    httpretty.register_uri(httpretty.POST, lb_manager_url)
 
     lbctrl.set_worker(addr, group, workerid, disable=True, proto='http')
+    req = httpretty.last_request()
+    assert req.method == 'POST'
+    assert req.parsed_body == {
+        'w': ['http://acc2.maduma.org/pompiste-metrics:80'],
+        'b': ['pompiste'],
+        'nonce': ['bc9300f7-7902-467f-953c-6e6c57f8303f'],
+        'w_status_D': ['1'],
+    }
 
     httpretty.disable()
     httpretty.reset()
@@ -94,20 +93,19 @@ def test_enable_worker():
     with open(filename, 'r') as f: html = f.read()
     lb_manager_url = f'http://{addr}/balancer-manager'
 
-    def request_callback(request, uri, response_headers):
-        assert request.parsed_body == {
-            'w': ['http://acc1.maduma.org/pianiste-metrics:80'],
-            'b': ['pianiste'],
-            'nonce': ['c4718cc9-b73a-4659-86a5-ceeb758f0160'],
-            'w_status_D': ['0'],
-            }
-        return [200, response_headers, '']
-
     httpretty.enable()
     httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
-    httpretty.register_uri(httpretty.POST, lb_manager_url, body=request_callback)
+    httpretty.register_uri(httpretty.POST, lb_manager_url)
 
     lbctrl.set_worker(addr, group, workerid, disable=False, proto='http')
+    req = httpretty.last_request()
+    assert req.method == 'POST'
+    assert req.parsed_body == {
+        'w': ['http://acc1.maduma.org/pianiste-metrics:80'],
+        'b': ['pianiste'],
+        'nonce': ['c4718cc9-b73a-4659-86a5-ceeb758f0160'],
+        'w_status_D': ['0'],
+    }
 
     httpretty.disable()
     httpretty.reset()

@@ -48,7 +48,7 @@ def set_worker(addr, group, workerid, disable, proto='https'):
     lb_manager_url = f'{proto}://{addr}/balancer-manager'
     html = get_html(addr, proto)
     status = parse_html(html)
-    if group in status and  workerid in status[group]['workers']:
+    if group in status and len(status[group]['workers']) > workerid:
         response = requests.post(lb_manager_url, data={
             'w': status[group]['workers'][workerid]['url'],
             'b': group,
