@@ -12,7 +12,7 @@ def test_get_group_status():
     httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
 
     status = lbctrl.get_group_status(addr, 'pianiste', proto='http')
-    assert status == 'ok'
+    assert status == ('ok', ['Init Ok', 'Init Ok'])
     status = lbctrl.get_group_status(addr, 'pompiste', proto='http')
     assert status == ('degraded', ['Init Err', 'Init Ok'])
 

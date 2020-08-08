@@ -1,4 +1,5 @@
 import click
+import sys
 from lbcontroller import lbctrl
 
 @click.group()
@@ -18,26 +19,36 @@ def status(ctx, group):
     proto = ctx.obj['PROTO']
     status = lbctrl.get_group_status(addr, group, proto=proto)
     click.echo(f'Status for {group} on {addr} {proto} loadbalancer: {status}')
-
-@cli.command()
-@click.argument('group')
-@click.argument('instance', type=int)
-@click.pass_context
-def disable(ctx, group, instance):
-    addr = ctx.obj['ADDR']
-    proto = ctx.obj['PROTO']
-    click.echo(f'Disable instance {instance} of {group} on {addr} {proto} loadbalancer')
-    lbctrl.set_worker(addr, group, instance, disable=True, proto=proto)
+    error_code = status[0]
+    if error_code == 'ok':
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 @cli.command()
 @click.argument('group')
 @click.argument('instance', type=int)
 @click.pass_context
 def enable(ctx, group, instance):
+    set_status(ctx, group, instance, disable=False)
+
+@cli.command()
+@click.argument('group')
+@click.argument('instance', type=int)
+@click.pass_context
+def disable(ctx, group, instance):
+    set_status(ctx, group, instance, disable=True)
+
+def set_status(ctx, group, instance, disable):
     addr = ctx.obj['ADDR']
     proto = ctx.obj['PROTO']
-    click.echo(f'enable instance {instance} of {group} on {addr} {proto} loadbalancer')
-    lbctrl.set_worker(addr, group, instance, disable=False, proto=proto)
+    action = 'disable' if disable else 'enable'
+    click.echo(f'{action} instance {instance} of {group} on {addr} {proto} loadbalancer')
+    success = lbctrl.set_worker(addr, group, instance, disable=disable, proto=proto)
+    if success:
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 def main():
     cli(obj={})
