@@ -2,8 +2,8 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 
-def get_group_status(addr, group, proto='https'):
-    html = get_html(addr, proto)
+def get_group_status(addr, group, proto='https', auth=None):
+    html = get_html(addr, proto, auth)
     if not html:
         return 'error', f'cannot connect to loadbalancer {addr}'
 
@@ -20,11 +20,11 @@ def get_group_status(addr, group, proto='https'):
             return 'nok', workers_status
     return 'degraded', workers_status
 
-def get_html(addr, proto):
+def get_html(addr, proto, auth):
     lb_manager_url = f'{proto}://{addr}/balancer-manager'
     html = None
     try:
-        response = requests.get(lb_manager_url, timeout=5)
+        response = requests.get(lb_manager_url, timeout=5, auth=auth)
         if response.status_code == 200:
             html = response.text
         else:
@@ -54,16 +54,16 @@ def parse_html(html):
                 })
     return status
 
-def set_worker(addr, group, workerid, disable, proto='https'):
+def set_worker(addr, group, workerid, disable, proto='https', auth=None):
     lb_manager_url = f'{proto}://{addr}/balancer-manager'
-    html = get_html(addr, proto)
+    html = get_html(addr, proto, auth)
     if not html:
         return False
 
     status = parse_html(html)
     if group in status and len(status[group]['workers']) > workerid:
         try:
-            response = requests.post(lb_manager_url, data={
+            response = requests.post(lb_manager_url, auth=auth, data={
                 'w': status[group]['workers'][workerid]['url'],
                 'b': group,
                 'nonce': status[group]['nonce'],

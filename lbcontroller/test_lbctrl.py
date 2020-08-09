@@ -1,6 +1,7 @@
 from lbcontroller import lbctrl
 import httpretty
 
+
 def test_get_group_status():
     addr = 'doc.maduma.org'
 
@@ -16,6 +17,20 @@ def test_get_group_status():
     status = lbctrl.get_group_status(addr, 'pompiste', proto='http')
     assert status == ('degraded', ['Init Err', 'Init Ok'])
 
+    httpretty.disable()
+    httpretty.reset()
+
+def test_get_group_status_with_auth():
+    addr = 'doc.maduma.org'
+    lb_manager_url = f'http://{addr}/balancer-manager'
+    auth_header = 'Basic YWRtaW46YWRtaW4='
+
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, lb_manager_url)
+
+    status = lbctrl.get_group_status(addr, 'pianiste', proto='http', auth=('admin', 'admin'))
+    assert httpretty.last_request().headers['Authorization'] == auth_header
+    
     httpretty.disable()
     httpretty.reset()
 
@@ -107,5 +122,26 @@ def test_enable_worker():
         'w_status_D': ['0'],
     }
 
+    httpretty.disable()
+    httpretty.reset()
+
+def test_enable_worker_with_auth():
+    addr = 'doc.maduma.org'
+    group = 'pianiste'
+    workerid = 0
+    auth_header = 'Basic YWRtaW46YWRtaW4='
+
+    filename = 'status_html/lb_status_ok.html'
+    with open(filename, 'r') as f: html = f.read()
+    lb_manager_url = f'http://{addr}/balancer-manager'
+
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, lb_manager_url, body=html)
+    httpretty.register_uri(httpretty.POST, lb_manager_url)
+
+    lbctrl.set_worker(addr, group, workerid, disable=False, proto='http', auth=('admin', 'admin'))
+
+    assert httpretty.last_request().method == 'POST'
+    assert httpretty.last_request().headers['Authorization'] == auth_header
     httpretty.disable()
     httpretty.reset()
