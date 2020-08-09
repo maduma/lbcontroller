@@ -54,8 +54,8 @@ def set_status(ctx, group, instance, disable):
         sys.exit(1)
 
 def basic_auth():
-    if 'LB_USER' in os.environ and 'LB_PASSWORD' in os.environ:
-        return os.environ['LB_USER'], os.environ['LB_PASSWORD']
+    if 'LB_CREDS_USR' in os.environ and 'LB_CREDS_PSW' in os.environ:
+        return os.environ['LB_CREDS_USR'], os.environ['LB_CREDS_PSW']
     return None
 
 def main():
