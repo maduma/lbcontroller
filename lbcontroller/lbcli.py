@@ -1,5 +1,6 @@
 import click
 import sys
+import os
 from lbcontroller import lbctrl
 
 @click.group()
@@ -17,7 +18,8 @@ def cli(ctx, addr, http):
 def status(ctx, group):
     addr = ctx.obj['ADDR']
     proto = ctx.obj['PROTO']
-    status = lbctrl.get_group_status(addr, group, proto=proto)
+    auth = basic_auth()
+    status = lbctrl.get_group_status(addr, group, proto=proto, auth=auth)
     click.echo(f'Status for {group} on {addr} {proto} loadbalancer: {status}')
     error_code = status[0]
     if error_code == 'ok':
@@ -44,11 +46,17 @@ def set_status(ctx, group, instance, disable):
     proto = ctx.obj['PROTO']
     action = 'disable' if disable else 'enable'
     click.echo(f'{action} instance {instance} of {group} on {addr} {proto} loadbalancer')
-    success = lbctrl.set_worker(addr, group, instance, disable=disable, proto=proto)
+    auth = basic_auth()
+    success = lbctrl.set_worker(addr, group, instance, disable=disable, proto=proto, auth=auth)
     if success:
         sys.exit(0)
     else:
         sys.exit(1)
+
+def basic_auth():
+    if 'LB_USER' in os.environ and 'LB_PASSWORD' in os.environ:
+        return os.environ['LB_USER'], os.environ['LB_PASSWORD']
+    return None
 
 def main():
     cli(obj={})
