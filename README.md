@@ -58,7 +58,8 @@ $ docker push registry.in.luxair.lu/lbcontroller:v1.0.1
 - install python dependencies
 - install the lbcontroller pkg localy
 ```
-python3.8 -m venv .venc
+cd lbcontroller
+python3.8 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .
